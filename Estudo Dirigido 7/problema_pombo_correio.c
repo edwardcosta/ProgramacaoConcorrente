@@ -1,3 +1,9 @@
+/******************************************
+* Aluno: Eduardo Calandrini Rocha da Costa
+* Matricula: 13/0059595
+* Programacao Concorrente - Prof Alchieri
+*******************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,17 +14,22 @@
 #define NUM_USERS 30
 
 sem_t vagas;
-sem_t cheia;
+sem_t cheia;int i;
 sem_t mutex;
 
 int c = 0;
 
 void * usuario(void * arg){
+    int i = *((int *) arg);
     while (1) {
         /*escreve*/
+        printf("Usuario %d escrevendo\n", i);
+        sleep(5);
+        printf("Usuario %d quer postar a carta\n",i);
         sem_wait(&vagas);
         sem_wait(&mutex);
         c++;
+        printf("Usuario %d postou a carta\n", i);
         if(c == NUM_USERS){
             sem_post(&cheia);
         }
@@ -27,17 +38,23 @@ void * usuario(void * arg){
 }
 
 void *  pombo(){
-    int i;
     while (1) {
         sem_wait(&cheia);
         sem_wait(&mutex);
         /*envia cartas*/
+        printf("Bolsa cheia, enviando cartas\n");
+        sleep(1);
+
         c = 0;
 
         for(i = 0; i < NUM_USERS; i++){
             sem_post(&vagas);
         }
+        printf("Pombo voando\n");
+        sleep(2);
         /*retornar para pegar mis cartas*/
+        printf("Cartas entregues, pombo retornando\n");
+        sleep(2);
         sem_post(&mutex);
     }
 }
