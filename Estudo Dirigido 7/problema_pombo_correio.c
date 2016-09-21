@@ -14,9 +14,10 @@
 #define NUM_USERS 30
 
 sem_t vagas;
-sem_t cheia;int i;
+sem_t cheia;
 sem_t mutex;
 
+int i;
 int c = 0;
 
 void * usuario(void * arg){
